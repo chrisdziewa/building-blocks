@@ -1,32 +1,27 @@
 def stock_picker(days)
-	count = 0
-	highest_profit = {profit: 0}
-	days.each do |day|
-		new_array = days[(count)...(days.length)]
-		smallest = new_array.shift
-		largest = new_array.max
-
-		buy = {price: smallest, index: days.index(smallest)}
-
-		sell = {price: largest, index: days.index(largest)}
-		unless largest.nil? or smallest.nil?
-			total = { profit: (sell[:price] - buy[:price]), buy: buy, sell: sell }
-			if total[:profit] > highest_profit[:profit]
-				highest_profit = total
+	buy, sell, total = 0,0,0
+	day1_count = 0
+	if days.length > 1
+		while day1_count < days.length	
+			day2_count = day1_count + 1
+			while day2_count < days.length
+				current_total = days[day2_count] - days[day1_count]
+				if current_total > total
+					buy, sell, total = day1_count, day2_count, current_total 
+				end
+				day2_count += 1
 			end
+			day1_count += 1
 		end
-		count += 1
 	end
-	if highest_profit[:profit] == 0 
-		puts "You won't make any profit either way"
-	else
-		puts "[#{highest_profit[:buy][:index]}, #{highest_profit[:sell][:index]}]"
-	end
+	"[#{buy}, #{sell}]"
 end
 
-stock_picker([15, 40, 15, 3, 10, 18, 1]) 
+puts stock_picker([15, 40, 15, 3, 10, 18, 1]) 
 # => [0, 1] # for a profit of $40 - $15 == $25
-stock_picker([17,3,6,9,15,8,6,1,10])
-# => [1,4] # for a profit of $15 - $3 == $12
-stock_picker([15,15,4])
-# => You won't make any profit either way
+puts stock_picker([15,17,3,6,9,15,8,6,1,10])
+# => [2,5] # for a profit of $15 - $3 == $12
+puts stock_picker([15,15, 4])
+# [0,0]
+puts stock_picker([15,4,10,3,18,1])
+#[3,4]
